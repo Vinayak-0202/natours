@@ -25,6 +25,5 @@ app.use('/api/v1/tours', tourRoutes); //mount the routes
 app.use('/api/v1/users', userRoutes);
 
 //START SERVER
-app.listen(3000, () => {
-  console.log('server started on  port no 3000');
-});
+
+module.exports = app;
