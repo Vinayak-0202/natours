@@ -1,12 +1,15 @@
 const express = require('express');
 const tourController = require('../controllers/tourControllerRoute');
-const routes = express.Router();
+const routers = express.Router();
 
-routes.route('/').get(tourController.getAllTours).post(tourController.addTour);
-routes
+//Param middlware
+routers.param('id', tourController.checkId);
+
+routers.route('/').get(tourController.getAllTours).post(tourController.addTour);
+routers
   .route('/:id')
   .get(tourController.getTour)
   .patch(tourController.updateTour)
   .delete(tourController.deleteTour);
 
-module.exports = routes;
+module.exports = routers;
