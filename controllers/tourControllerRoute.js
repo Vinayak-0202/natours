@@ -16,6 +16,19 @@ exports.checkId = (req, res, next, val) => {
   next();
 };
 
+//This param middleware call back function check the data is in correct format or not
+exports.checkBody = (req, res, next) => {
+  // console.log(req.body);
+  if (!req.body.name || !req.body.price) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Bad Request Responce',
+    });
+  }
+
+  next();
+};
+
 exports.getAllTours = (req, res) => {
   console.log(req.requestTime);
   res.status(200).json({
@@ -43,7 +56,8 @@ exports.getTour = (req, res) => {
 };
 
 exports.addTour = (req, res) => {
-  //console.log(req.body);
+  console.log(req.body);
+  console.log(req.params);
   const newId = toursData[toursData.length - 1].id + 1;
   //Object.assign is used to add new properties to the exisiting object
   const newTour = Object.assign({ id: newId }, req.body);
