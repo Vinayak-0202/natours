@@ -6,7 +6,8 @@ const userRoutes = require(`${__dirname}/routes/userRoutes.js`);
 const app = express();
 
 //1) MIDLEWAERS
-app.use(morgan('dev'));
+console.log(process.env.NODE_ENV);
+if (!process.env.NODE_ENV === 'development') app.use(morgan('dev'));
 app.use(express.json()); //it is middleware is function which modify the incoming request data and here it modifies the  data to json format
 
 app.use((req, res, next) => {
