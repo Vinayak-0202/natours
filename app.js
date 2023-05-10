@@ -19,6 +19,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(express.static(`${__dirname}/public`));
+
 //ROUTES
 //Creating middleware tourRoutes and userRoutes
 app.use('/api/v1/tours', tourRoutes); //mount the routes
