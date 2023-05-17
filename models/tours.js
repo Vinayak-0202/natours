@@ -34,6 +34,10 @@ const tourSchema = new mongoose.Schema({
     trim: true,
     required: [true, 'tour must have a description'],
   },
+  difficulty: {
+    type: String,
+    required: [true, 'tour must have a difficult'],
+  },
   description: {
     type: String,
     trim: true,

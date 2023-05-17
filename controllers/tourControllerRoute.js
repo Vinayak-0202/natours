@@ -2,9 +2,45 @@ const express = require('express');
 const Tour = require('../models/tours.js');
 
 exports.getAllTours = async (req, res) => {
-  console.log(req.requestTime);
   try {
-    const tours = await Tour.find();
+    // const tours = await Tour.find({
+    //   difficulty: 'easy',
+    //   duration: 5,
+    // });
+
+    // const tours = await Tour.find()
+    //   .where('duration')
+    //   .equals(5)
+    //   .where('difficulty')
+    //   .equals('easy');
+
+    //BUILD QUERY
+
+    const queryObj = { ...req.query };
+    //FILTERING
+    const excludedObj = ['page', 'sort', 'limit'];
+    excludedObj.forEach((el) => delete queryObj[el]);
+
+    console.log(queryObj);
+
+    //ADVANCED FILTERING
+    let queryStr = JSON.stringify(queryObj);
+    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
+
+    //EXCUTE QUERY
+    let query = Tour.find(JSON.parse(queryStr));
+
+    //SORTING
+    if (req.query.sort) {
+      console.log(req.query.sort);
+      const sortBy = req.query.sort.split(',').join(' ');
+      query = query.sort(sortBy);
+      //sort(price ratingAverage)
+    } else {
+      query = query.sort('-createdAt');
+    }
+
+    const tours = await query;
     res.status(200).json({
       status: 'success',
       results: tours.length,
@@ -15,7 +51,7 @@ exports.getAllTours = async (req, res) => {
   } catch (err) {
     res.status(404).json({
       status: 'fail',
-      message: 'Invalid Request',
+      message: err,
     });
   }
 };
