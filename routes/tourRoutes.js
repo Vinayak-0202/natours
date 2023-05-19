@@ -8,6 +8,7 @@ routers
   .route('/first-5-cheap')
   .get(tourController.aliasQuery, tourController.getAllTours);
 
+routers.route('/tour-stats').get(tourController.getTourStats);
 routers.route('/').get(tourController.getAllTours).post(tourController.addTour); //Using param middleware to check the data format is correct.
 routers
   .route('/:id')
