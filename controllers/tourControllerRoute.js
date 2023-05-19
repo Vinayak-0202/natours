@@ -1,57 +1,24 @@
 const express = require('express');
 const Tour = require('../models/tours.js');
+const APIFeatures = require('./../utils/apiFeatures.js');
+
+//Middleware is used to alias query for user --it set or manuplate the query..
+exports.aliasQuery = (req, res, next) => {
+  req.query.limit = '5';
+  req.query.sort = 'price,ratingAverage';
+  req.query.fields = 'name,duration,difficulty,price,summary';
+  next();
+};
 
 exports.getAllTours = async (req, res) => {
   try {
-    // const tours = await Tour.find({
-    //   difficulty: 'easy',
-    //   duration: 5,
-    // });
+    const featuer = new APIFeatures(Tour.find(), req.query)
+      .filter()
+      .sort()
+      .limit()
+      .paginate();
+    const tours = await featuer.query;
 
-    // const tours = await Tour.find()
-    //   .where('duration')
-    //   .equals(5)
-    //   .where('difficulty')
-    //   .equals('easy');
-
-    //BUILD QUERY
-
-    const queryObj = { ...req.query };
-    //FILTERING
-    const excludedObj = ['page', 'sort', 'limit', 'fields'];
-    excludedObj.forEach((el) => delete queryObj[el]);
-
-    console.log(queryObj);
-
-    //ADVANCED FILTERING
-    let queryStr = JSON.stringify(queryObj);
-    queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`);
-
-    //EXCUTE QUERY
-    let query = Tour.find(JSON.parse(queryStr));
-
-    //SORTING
-    if (req.query.sort) {
-      const sortBy = req.query.sort.split(',').join(' ');
-      query = query.sort(sortBy);
-      //sort(price ratingAverage)
-    } else {
-      query = query.sort('-createdAt');
-    }
-
-    //FIELDS Limiting
-    if (req.query.fields) {
-      console.log(req.query.fields);
-      const fields = req.query.fields.split(',').join(' ');
-      console.log(fields);
-      //query.select('name duration difficulty')
-      query = query.select(fields);
-    } else {
-      query = query.select('-__v');
-    }
-
-    const tours = await query;
-    console.log(tours);
     res.status(200).json({
       status: 'success',
       results: tours.length,
