@@ -9,6 +9,7 @@ routers
   .get(tourController.aliasQuery, tourController.getAllTours);
 
 routers.route('/tour-stats').get(tourController.getTourStats);
+routers.route('/monthly-tour/:year').get(tourController.getMonthlyTour);
 routers.route('/').get(tourController.getAllTours).post(tourController.addTour); //Using param middleware to check the data format is correct.
 routers
   .route('/:id')
