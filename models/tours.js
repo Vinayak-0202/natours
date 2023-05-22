@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const validator = require('validator');
 //creating DataBase Schema
 const tourSchema = new mongoose.Schema(
   {
@@ -8,8 +9,18 @@ const tourSchema = new mongoose.Schema(
       required: [true, 'tour must have name'],
       unique: true,
       trim: true,
+      maxlength: [50, 'the name of the Tour must less than the or equal to 50'],
+      minlength: [
+        10,
+        'the name of the Tour must greater than the or equal to 10',
+      ],
+      validate: [validator.isAlpha, 'Tour must contain only charaecterstics'],
     },
     slug: String,
+    secreatTour: {
+      type: Boolean,
+      default: false,
+    },
     duration: {
       type: Number,
       required: [true, 'tour must have duration'],
@@ -21,6 +32,8 @@ const tourSchema = new mongoose.Schema(
     ratingAverage: {
       type: Number,
       default: 4.5,
+      min: [1, 'rating must be greater or equal to 1'],
+      max: [5, 'rating must less than or equal to 5'],
     },
     ratingQuantity: {
       type: Number,
@@ -30,7 +43,16 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       required: [true, 'tour must have price'],
     },
-    priceDiscount: Number,
+    priceDiscount: {
+      type: Number,
+      validate: {
+        //THIS FUNCTION Only points to the  current doc on new document creation
+        validator: function (val) {
+          return val < this.price;
+        },
+        message: 'the priceDiscount:({VALUE}) must less than the price',
+      },
+    },
     summary: {
       type: String,
       trim: true,
@@ -39,6 +61,10 @@ const tourSchema = new mongoose.Schema(
     difficulty: {
       type: String,
       required: [true, 'tour must have a difficult'],
+      enum: {
+        values: ['easy', 'medium', 'difficult'],
+        message: 'the value must be easy, midium, difficulty',
+      },
     },
     description: {
       type: String,
@@ -76,6 +102,28 @@ tourSchema.pre('save', function (next) {
 
 tourSchema.post('save', function (doc, next) {
   console.log(doc);
+  next();
+});
+
+//Query Middleware--> runs before and after the certain query excuted.
+//tourSchema.pre('find', function (next) {
+tourSchema.pre(/^find/, function (next) {
+  this.find({ secreatTour: { $ne: true } });
+  this.start = Date.now();
+  next();
+});
+
+tourSchema.post(/^find/, function (docs, next) {
+  console.log(
+    `Query take a ${Date.now() - this.start} milliseconds to excute `
+  );
+  next();
+});
+
+//Aggregate middleware
+tourSchema.pre('aggregate', function (next) {
+  this.pipeline().unshift({ $match: { secreatTour: { $ne: true } } });
+  console.log(this.pipeline());
   next();
 });
 //Creating Data model
