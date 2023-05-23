@@ -1,5 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 const tourRoutes = require(`${__dirname}/routes/tourRoutes.js`);
 const userRoutes = require(`${__dirname}/routes/userRoutes.js`);
 
@@ -27,6 +29,14 @@ app.use(express.static(`${__dirname}/public`));
 app.use('/api/v1/tours', tourRoutes); //mount the routes
 app.use('/api/v1/users', userRoutes);
 
-//START SERVER
+app.all('*', (req, res, next) => {
+  // const error = new Error('Cant determine the route that you enterd');
+  // error.statusCode = 404;
+  // error.status = 'fail';
+  next(new AppError(404, 'Cant determine the route that you enterd'));
+});
 
+//Global Error Handling middleware
+app.use(globalErrorHandler);
+//START SERVER
 module.exports = app;
