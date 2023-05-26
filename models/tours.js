@@ -14,7 +14,7 @@ const tourSchema = new mongoose.Schema(
         10,
         'the name of the Tour must greater than the or equal to 10',
       ],
-      validate: [validator.isAlpha, 'Tour must contain only charaecterstics'],
+      //  validate: [validator.isAlpha, 'Tour must contain only charaecterstics'],
     },
     slug: String,
     secreatTour: {
