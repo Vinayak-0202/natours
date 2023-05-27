@@ -7,7 +7,7 @@
     "test": "nodemon server.js",
     "start:dev": "nodemon server.js",
     "start:prod": "NODE_ENV=production nodemon server.js",
-    "start": "node server.js"
+    "start": "nodemon server.js"
   },
   "author": "Vinayak Nikam",
   "license": "ISC",
