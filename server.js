@@ -5,6 +5,13 @@ const app = require('./app');
 
 // console.log(process.env);
 // app.get('env');
+
+process.on('uncaughtException', (err) => {
+  console.log('uncaught Exception... ');
+  console.log(err.name, err.message);
+  process.exit(1);
+});
+
 const DB = process.env.DATABASE;
 mongoose
   .connect(DB, {
@@ -13,7 +20,16 @@ mongoose
     useFindAndModify: true,
   })
   .then(() => console.log('Data Base connected sucsessfuly......'));
+//.catch((err) => console.log('Error is Occured...'));
 
-app.listen(process.env.PORT, () => {
+const server = app.listen(process.env.PORT, () => {
   console.log('server started on  port no ', process.env.PORT);
+});
+
+process.on('unhandledRejection', (err) => {
+  console.log('Unhandled Rejections ...');
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
 });
