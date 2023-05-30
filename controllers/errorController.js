@@ -28,6 +28,10 @@ const handleValidationError = (err) => {
 
 const handleJWTError = (err) =>
   new AppError(401, 'Invalid Token, Please login again');
+
+const handleTokenExpire = (err) =>
+  new AppError(401, 'Token has expired , log in again');
+
 const sendProdError = (err, res) => {
   //operational , trusted error send messages to clilient
   console.log('inside sendProdError', err.isOperational);
@@ -60,6 +64,7 @@ module.exports = (err, req, res, next) => {
     if (error.code === 11000) error = handleDuplicateFiledsDB(error);
     if (error.name === 'ValidationError') error = handleValidationError(error);
     if (error.name === 'JsonWebTokenError') error = handleJWTError(error);
+    if (error.name === 'TokenExpiredError') error = handleTokenExpire(error);
     sendProdError(error, res);
   }
 
