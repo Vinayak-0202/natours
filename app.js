@@ -14,7 +14,7 @@ app.use(express.json()); //it is middleware is function which modify the incomin
 
 app.use((req, res, next) => {
   console.log('This is the middlware function ');
-  console.log(req.headers);
+  // console.log(req.headers);
   next();
 });
 

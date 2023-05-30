@@ -6,7 +6,7 @@ const AppError = require('./../utils/appError');
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
-    expiresIn: `5000`,
+    expiresIn: `${process.env.JWT_EXPRIES_IN}`,
   });
 };
 
@@ -16,6 +16,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     passwordConfirm: req.body.passwordConfirm,
+    passwordChangeAt: req.body.passwordChangeAt,
   });
 
   const token = signToken(newUser._id);
@@ -60,7 +61,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   ) {
     token = req.headers.authorization.split(' ')[1];
   }
-  console.log(token);
 
   if (!token) {
     return next(
@@ -72,8 +72,33 @@ exports.protect = catchAsync(async (req, res, next) => {
   const decode = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
 
   //3)check if user still exits
+  const freshUser = await User.findById(decode.id);
+
+  if (!freshUser)
+    return next(
+      new AppError(401, 'The user  belonging to this token no longer exits')
+    );
 
   //4)check user changes password after token issued
+  if (freshUser.changePasswordAfter(decode.iat)) {
+    return next(
+      new AppError(401, 'recently password is changed , log in again')
+    );
+  }
 
+  //Grant Access to the route
+  req.user = freshUser;
   next();
 });
+
+exports.restrictTO = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.roles)) {
+      return next(
+        new AppError(403, 'you dont have permission to delete the tours')
+      );
+    }
+
+    next();
+  };
+};
