@@ -12,6 +12,17 @@ const signToken = (id) => {
   });
 };
 
+const creatSendToken = (user, statusCode, res) => {
+  const token = signToken(user._id);
+  res.status(statusCode).json({
+    status: 'sucsess',
+    token,
+    data: {
+      user,
+    },
+  });
+};
+
 exports.signUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
@@ -21,15 +32,7 @@ exports.signUp = catchAsync(async (req, res, next) => {
     passwordChangeAt: req.body.passwordChangeAt,
   });
 
-  const token = signToken(newUser._id);
-
-  res.status(201).json({
-    status: 'Sucsess',
-    token: token,
-    data: {
-      user: newUser,
-    },
-  });
+  creatSendToken(newUser, 201, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -47,11 +50,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   //if everyThing ok send token to client
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'sucsess',
-    token,
-  });
+  creatSendToken(user, 200, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -150,7 +149,7 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.resetPassword = async (req, res, next) => {
+exports.resetPassword = catchAsync(async (req, res, next) => {
   //1) Get user based on token
   const hasedToken = crypto
     .createHash('sha256')
@@ -171,14 +170,25 @@ exports.resetPassword = async (req, res, next) => {
   user.passwordConfirm = req.body.passwordConfirm;
   user.passwordResetToken = undefined;
   user.passwordResetExpirIn = undefined;
-  user.save();
+  await user.save();
 
   //3) update changePasswordAt property for user
   //4)log the user in, send jwt
-  const token = signToken(user._id);
+  creatSendToken(user, 200, res);
+});
 
-  res.status(200).json({
-    status: 'sucsess',
-    token,
-  });
-};
+exports.updatePassword = catchAsync(async (req, res, next) => {
+  //1)get user from collection
+  const user = await User.findById(req.user.id).select('+password');
+
+  if (!user) return next(new AppError(401, 'please login to update password'));
+
+  if (!(await user.correctPassword(req.body.password, user.password)))
+    return next(new AppError(401, 'Invlid Password enter correct password'));
+
+  user.password = req.body.NewPassword;
+  user.passwordConfirm = req.body.passwordConfirm;
+  await user.save();
+
+  creatSendToken(user, 200, res);
+});
