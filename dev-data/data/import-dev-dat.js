@@ -16,9 +16,7 @@ mongoose
   .then(() => console.log('Data Base connected sucsessfuly......'));
 
 //READING THE JSON FILE
-const tours = JSON.parse(
-  fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8')
-);
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 
 //IMPORTING DATA TO MONOGODB DATABASE COLLECTION
 const importData = async () => {
