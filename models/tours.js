@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const User = require('./userModel');
+
 // const validator = require('validator');
 //creating DataBase Schema
 const tourSchema = new mongoose.Schema(
@@ -108,7 +109,7 @@ const tourSchema = new mongoose.Schema(
     ],
     guides: [
       {
-        typr: mongoose.Schema.ObjectId,
+        type: mongoose.Schema.ObjectId,
         ref: 'User',
       },
     ],
@@ -136,17 +137,25 @@ tourSchema.post('save', function (doc, next) {
   next();
 });
 
-tourSchema.pre('save', async function (next) {
-  const guidePromises = this.guides.map(async (id) => await User.findById(id));
-  this.guides = await Promise.all(guidePromises);
-  next();
-});
+// tourSchema.pre('save', async function (next) {
+//   const guidePromises = this.guides.map(async (id) => await User.findById(id));
+//   this.guides = await Promise.all(guidePromises);
+//   next();
+// });
 
 //Query Middleware--> runs before and after the certain query excuted.
 //tourSchema.pre('find', function (next) {
 tourSchema.pre(/^find/, function (next) {
   this.find({ secreatTour: { $ne: true } });
   this.start = Date.now();
+  next();
+});
+
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangeAt',
+  });
   next();
 });
 
