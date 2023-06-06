@@ -4,6 +4,7 @@ const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 const tourRoutes = require(`${__dirname}/routes/tourRoutes.js`);
 const userRoutes = require(`${__dirname}/routes/userRoutes.js`);
+const reivewRoutes = require(`${__dirname}/routes/reviewRoutes.js`);
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -70,6 +71,7 @@ app.use(express.static(`${__dirname}/public`));
 //Creating middleware tourRoutes and userRoutes
 app.use('/api/v1/tours', tourRoutes); //mount the routes
 app.use('/api/v1/users', userRoutes);
+app.use('/api/v1/reviews', reivewRoutes);
 
 app.all('*', (req, res, next) => {
   // const error = new Error('Cant determine the route that you enterd');
