@@ -30,7 +30,10 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 });
 
 exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id);
+  const tour = await Tour.findById(req.params.id).populate({
+    path: 'reviews',
+    select: 'review',
+  });
   //Tour.findOne({_id:req.param.id})
   if (!tour) {
     return next(new AppError(404, 'Invalid Tour id'));
