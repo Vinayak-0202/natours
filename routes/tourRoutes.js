@@ -2,6 +2,13 @@ const express = require('express');
 const tourController = require('../controllers/tourControllerRoute');
 const routers = express.Router();
 const authController = require('../controllers/authController');
+const reviewController = require('../controllers/reviewController');
+const reviewRouter = require('./reviewRoutes.js');
+
+// //POST tour/f2385/reviews
+// //GET tour/f2385/reviews
+// //GET tour/f2385/reviews/2334df455
+routers.use('/:tourId/reviews', reviewRouter);
 
 //Param middlware
 // routers.param('id', tourController.checkId);
