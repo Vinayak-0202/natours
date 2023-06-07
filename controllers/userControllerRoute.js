@@ -81,9 +81,11 @@ exports.addUser = (req, res) => {
 
 exports.deleteUser = factory.deleteOne(User);
 
-exports.updateUser = (req, res) => {
-  res.status(500).json({
-    status: 'fail',
-    message: 'Internal Server Error',
-  });
-};
+// exports.updateUser = (req, res) => {
+//   res.status(500).json({
+//     status: 'fail',
+//     message: 'Internal Server Error',
+//   });
+// };
+
+exports.updateUser = factory.updateOne(User);

@@ -59,30 +59,31 @@ exports.addTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.updateTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndUpdate(
-    req.params.id,
-    req.body,
-    {
-      new: true,
-      runValidators: true,
-    },
-    (err) => {
-      if (err) return next(new AppError(404, 'Invalid Tour id'));
-    }
-  );
+// exports.updateTour = catchAsync(async (req, res, next) => {
+//   const tour = await Tour.findByIdAndUpdate(
+//     req.params.id,
+//     req.body,
+//     {
+//       new: true,
+//       runValidators: true,
+//     },
+//     (err) => {
+//       if (err) return next(new AppError(404, 'Invalid Tour id'));
+//     }
+//   );
 
-  if (!tour) {
-    console.log('herre is error');
-    return next(new AppError(404, 'Invalid Tour id'));
-  }
-  res.status(200).json({
-    status: 'sucess',
-    data: {
-      tour,
-    },
-  });
-});
+//   if (!tour) {
+//     console.log('herre is error');
+//     return next(new AppError(404, 'Invalid Tour id'));
+//   }
+//   res.status(200).json({
+//     status: 'sucess',
+//     data: {
+//       tour,
+//     },
+//   });
+// });
+exports.updateTour = factory.updateOne(Tour);
 
 // exports.deleteTour = catchAsync(async (req, res, next) => {
 //   const tour = await Tour.findByIdAndDelete(req.params.id, (err) => {
@@ -99,7 +100,6 @@ exports.updateTour = catchAsync(async (req, res, next) => {
 //     },
 //   });
 // });
-
 exports.deleteTour = factory.deleteOne(Tour);
 
 exports.getTourStats = catchAsync(async (req, res, next) => {
