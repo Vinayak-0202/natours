@@ -2,6 +2,7 @@ const express = require('express');
 const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync.js');
 const AppError = require('./../utils/appError');
+const factory = require('./handlerFactory.js');
 
 const filterObject = (obj, ...alloweFields) => {
   const newObj = {};
@@ -63,6 +64,7 @@ exports.deleteMe = async (req, res, next) => {
     data: null,
   });
 };
+
 exports.addUser = (req, res) => {
   res.status(500).json({
     status: 'fail',
@@ -70,12 +72,14 @@ exports.addUser = (req, res) => {
   });
 };
 
-exports.deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'fail',
-    message: 'Internal Server Error',
-  });
-};
+// exports.deleteUser = (req, res) => {
+//   res.status(500).json({
+//     status: 'fail',
+//     message: 'Internal Server Error',
+//   });
+// };
+
+exports.deleteUser = factory.deleteOne(User);
 
 exports.updateUser = (req, res) => {
   res.status(500).json({

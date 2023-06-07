@@ -3,6 +3,7 @@ const Tour = require('../models/tours.js');
 const APIFeatures = require('./../utils/apiFeatures.js');
 const AppError = require('./../utils/appError.js');
 const catchAsync = require('./../utils/catchAsync.js');
+const factory = require('./handlerFactory.js');
 
 //Middleware is used to alias query for user --it set or manuplate the query..
 exports.aliasQuery = (req, res, next) => {
@@ -83,21 +84,24 @@ exports.updateTour = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.deleteTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findByIdAndDelete(req.params.id, (err) => {
-    if (err) return next(new AppError(404, 'Invalid Tour id'));
-  });
+// exports.deleteTour = catchAsync(async (req, res, next) => {
+//   const tour = await Tour.findByIdAndDelete(req.params.id, (err) => {
+//     if (err) return next(new AppError(404, 'Invalid Tour id'));
+//   });
 
-  if (!tour) {
-    return next(new AppError(404, 'Invalid Tour id'));
-  }
-  res.status(204).json({
-    status: 'sucsess',
-    message: {
-      data: null,
-    },
-  });
-});
+//   if (!tour) {
+//     return next(new AppError(404, 'Invalid Tour id'));
+//   }
+//   res.status(204).json({
+//     status: 'sucsess',
+//     message: {
+//       data: null,
+//     },
+//   });
+// });
+
+exports.deleteTour = factory.deleteOne(Tour);
+
 exports.getTourStats = catchAsync(async (req, res, next) => {
   const stats = await Tour.aggregate([
     {

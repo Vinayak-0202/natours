@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 const User = require('./userModel');
+const router = require('../routes/reviewRoutes');
 
 // const validator = require('validator');
 //creating DataBase Schema
@@ -179,6 +180,7 @@ tourSchema.pre('aggregate', function (next) {
   console.log(this.pipeline());
   next();
 });
+
 //Creating Data model
 const Tour = mongoose.model('Tour', tourSchema);
 
