@@ -1,6 +1,5 @@
 const express = require('express');
 const Tour = require('../models/tours.js');
-const APIFeatures = require('./../utils/apiFeatures.js');
 const AppError = require('./../utils/appError.js');
 const catchAsync = require('./../utils/catchAsync.js');
 const factory = require('./handlerFactory.js');
@@ -13,51 +12,57 @@ exports.aliasQuery = (req, res, next) => {
   next();
 };
 
-exports.getAllTours = catchAsync(async (req, res, next) => {
-  const featuer = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limit()
-    .paginate();
-  const tours = await featuer.query;
+// exports.getAllTours = catchAsync(async (req, res, next) => {
+//   const featuer = new APIFeatures(Tour.find(), req.query)
+//     .filter()
+//     .sort()
+//     .limit()
+//     .paginate();
+//   const tours = await featuer.query;
 
-  res.status(200).json({
-    status: 'success',
-    results: tours.length,
-    data: {
-      tours,
-    },
-  });
-});
+//   res.status(200).json({
+//     status: 'success',
+//     results: tours.length,
+//     data: {
+//       tours,
+//     },
+//   });
+// });
 
-exports.getTour = catchAsync(async (req, res, next) => {
-  const tour = await Tour.findById(req.params.id).populate({
-    path: 'reviews',
-    select: 'review',
-  });
-  //Tour.findOne({_id:req.param.id})
-  if (!tour) {
-    return next(new AppError(404, 'Invalid Tour id'));
-  }
-  res.status(200).json({
-    status: 'success',
-    data: {
-      tour,
-    },
-  });
-});
+exports.getAllTours = factory.getAll(Tour);
 
-exports.addTour = catchAsync(async (req, res, next) => {
-  // const newTour= new Tour({});
-  // newTour.save();
-  const newTour = await Tour.create(req.body);
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour: newTour,
-    },
-  });
-});
+// exports.getTour = catchAsync(async (req, res, next) => {
+//   const tour = await Tour.findById(req.params.id).populate({
+//     path: 'reviews',
+//     select: 'review',
+//   });
+//   //Tour.findOne({_id:req.param.id})
+//   if (!tour) {
+//     return next(new AppError(404, 'Invalid Tour id'));
+//   }
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       tour,
+//     },
+//   });
+// });
+
+exports.getTour = factory.getOne(Tour, { path: 'reviews', select: 'review' });
+
+// exports.addTour = catchAsync(async (req, res, next) => {
+//   // const newTour= new Tour({});
+//   // newTour.save();
+//   const newTour = await Tour.create(req.body);
+//   res.status(201).json({
+//     status: 'success',
+//     data: {
+//       tour: newTour,
+//     },
+//   });
+// });
+
+exports.addTour = factory.creatOne(Tour);
 
 // exports.updateTour = catchAsync(async (req, res, next) => {
 //   const tour = await Tour.findByIdAndUpdate(

@@ -5,15 +5,15 @@ const AppError = require('./../utils/appError.js');
 const catchAsync = require('./../utils/catchAsync.js');
 const factory = require('./handlerFactory.js');
 
-exports.getAllReviews = catchAsync(async (req, res, next) => {
-  let filter = {};
-  if (req.params.tourId) filter = { tour: req.params.tourId };
-  const review = await Review.find(filter);
-  res.status(200).json({
-    message: 'sucess',
-    data: review,
-  });
-});
+// exports.getAllReviews = catchAsync(async (req, res, next) => {
+//   let filter = {};
+//   if (req.params.tourId) filter = { tour: req.params.tourId };
+//   const review = await Review.find(filter);
+//   res.status(200).json({
+//     message: 'sucess',
+//     data: review,
+//   });
+// });
 
 // exports.creatReview = catchAsync(async (req, res, next) => {
 //   //Allow nested tour
@@ -32,8 +32,8 @@ exports.setTourIdUser = (req, res, next) => {
   next();
 };
 
+exports.getAllReviews = factory.getAll(Review);
 exports.creatReview = factory.creatOne(Review);
-
 exports.deleteReview = factory.deleteOne(Review);
-
 exports.updateReview = factory.updateOne(Review);
+exports.getReview = factory.getOne(Review);

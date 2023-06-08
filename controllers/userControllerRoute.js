@@ -13,17 +13,26 @@ const filterObject = (obj, ...alloweFields) => {
   return newObj;
 };
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const user = await User.find();
+// exports.getAllUsers = catchAsync(async (req, res, next) => {
+//   const user = await User.find();
 
-  res.status(200).json({
-    status: 'success',
-    results: user.length,
-    data: {
-      user,
-    },
-  });
-});
+//   res.status(200).json({
+//     status: 'success',
+//     results: user.length,
+//     data: {
+//       user,
+//     },
+//   });
+// });
+
+exports.getAllUsers = factory.getAll(User);
+
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
+exports.getUser = factory.getOne(User);
 
 exports.updateMe = catchAsync(async (req, res, next) => {
   //1) Genrate error if user post the password data

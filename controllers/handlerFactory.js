@@ -1,5 +1,6 @@
 const AppError = require('./../utils/appError.js');
 const catchAsync = require('./../utils/catchAsync.js');
+const APIFeatures = require('./../utils/apiFeatures.js');
 
 exports.deleteOne = (Model) =>
   catchAsync(async (req, res, next) => {
@@ -53,7 +54,47 @@ exports.creatOne = (Model) =>
     res.status(201).json({
       status: 'success',
       data: {
-        tour: doc,
+        doc: doc,
+      },
+    });
+  });
+
+exports.getOne = (Model, popOption) =>
+  catchAsync(async (req, res, next) => {
+    let query = Model.findById(req.params.id);
+
+    if (popOption) query = query.populate(popOption);
+    const doc = await query;
+
+    if (!doc) {
+      return next(new AppError(404, 'Invalid document id'));
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        data: doc,
+      },
+    });
+  });
+
+exports.getAll = (Model) =>
+  catchAsync(async (req, res, next) => {
+    let filter = {};
+    if (req.params.tourId) filter = { tour: req.params.tourId };
+
+    const featuer = new APIFeatures(Model.find(filter), req.query)
+      .filter()
+      .sort()
+      .limit()
+      .paginate();
+    const doc = await featuer.query;
+
+    res.status(200).json({
+      status: 'success',
+      results: doc.length,
+      data: {
+        data: doc,
       },
     });
   });
