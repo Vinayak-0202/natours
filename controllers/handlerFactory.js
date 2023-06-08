@@ -44,3 +44,16 @@ exports.updateOne = (Model) =>
       },
     });
   });
+
+exports.creatOne = (Model) =>
+  catchAsync(async (req, res, next) => {
+    // const newTour= new Tour({});
+    // newTour.save();
+    const doc = await Model.create(req.body);
+    res.status(201).json({
+      status: 'success',
+      data: {
+        tour: doc,
+      },
+    });
+  });
