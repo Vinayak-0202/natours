@@ -106,9 +106,9 @@ exports.protect = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.restrictTO = (...roles) => {
+exports.restrictTO = (...role) => {
   return (req, res, next) => {
-    if (!roles.includes(req.user.roles)) {
+    if (!role.includes(req.user.role)) {
       return next(
         new AppError(403, 'you dont have permission to delete the tours')
       );
