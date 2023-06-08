@@ -9,21 +9,24 @@ router.post('/signup', authController.signUp);
 router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
-router.patch(
-  '/updatePassword',
-  authController.protect,
-  authController.updatePassword
-);
-router.delete('/deleteMe', authController.protect, userControllers.deleteMe);
 
-router.patch('/updateMe', authController.protect, userControllers.updateMe);
+//Protect all middleware after this midlware.
+router.use(authController.protect);
+
+router.patch('/updatePassword', authController.updatePassword);
+router.delete('/deleteMe', userControllers.deleteMe);
+
+router.patch('/updateMe', userControllers.updateMe);
 
 router.get(
   '/me',
-  authController.protect,
+
   userControllers.getMe,
   userControllers.getUser
 );
+
+router.use(authController.restrictTO('admin'));
+
 router
   .route('/')
   .get(userControllers.getAllUsers)
