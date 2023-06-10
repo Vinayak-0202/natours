@@ -88,7 +88,7 @@ exports.getAll = (Model) =>
       .sort()
       .limit()
       .paginate();
-    const doc = await featuer.query;
+    const doc = await featuer.query; //.explain(); //explain() gives the statistic about all the data whic going to retrive
 
     res.status(200).json({
       status: 'success',
