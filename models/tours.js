@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
-const User = require('./userModel');
-const router = require('../routes/reviewRoutes');
+//const User = require('./userModel');
+//const router = require('../routes/reviewRoutes');
 
 // const validator = require('validator');
 //creating DataBase Schema
@@ -120,6 +120,10 @@ const tourSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
+
+//indexing
+tourSchema.index({ price: 1, ratingAverage: -1 });
+tourSchema.index({ slug: 1 });
 
 //Virtual properties -- In Mongoose, a virtual is a property that is not stored in MongoDB.
 //Virtuals are typically used for computed properties on documents.
