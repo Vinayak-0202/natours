@@ -176,3 +176,16 @@ exports.getMonthlyTour = catchAsync(async (req, res, next) => {
     },
   });
 });
+
+// tours-within/:distance/center/:latlang/unit/:unit
+// tours-within/250/center/3405,-4508/unit/:km
+
+exports.getTourWithin = (req, res, next) => {
+  const { distance, latlang, unit } = req.params;
+  const [lat, lang] = latlang.split(',');
+  console.log(lat, lang);
+
+  res.status(200).json({
+    status: 'sucess',
+  });
+};

@@ -52,4 +52,8 @@ routers
     tourController.deleteTour
   );
 
+routers
+  .route('/tours-within/:distance/center/:latlang/unit/:unit')
+  .get(tourController.getTourWithin);
+
 module.exports = routers;
