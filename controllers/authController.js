@@ -110,7 +110,7 @@ exports.restrictTO = (...role) => {
   return (req, res, next) => {
     if (!role.includes(req.user.role)) {
       return next(
-        new AppError(403, 'you dont have permission to delete the tours')
+        new AppError(403, 'you dont have permission to update the document')
       );
     }
 
