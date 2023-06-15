@@ -126,6 +126,7 @@ const tourSchema = new mongoose.Schema(
 //indexing
 tourSchema.index({ price: 1, ratingAverage: -1 });
 tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 //Virtual properties -- In Mongoose, a virtual is a property that is not stored in MongoDB.
 //Virtuals are typically used for computed properties on documents.
@@ -181,11 +182,11 @@ tourSchema.post(/^find/, function (docs, next) {
 });
 
 //Aggregate middleware
-tourSchema.pre('aggregate', function (next) {
-  this.pipeline().unshift({ $match: { secreatTour: { $ne: true } } });
-  console.log(this.pipeline());
-  next();
-});
+// tourSchema.pre('aggregate', function (next) {
+//   this.pipeline().unshift({ $match: { secreatTour: { $ne: true } } });
+//   console.log(this.pipeline());
+//   next();
+// });
 
 //Creating Data model
 const Tour = mongoose.model('Tour', tourSchema);

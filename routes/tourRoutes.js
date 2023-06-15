@@ -56,4 +56,6 @@ routers
   .route('/tours-within/:distance/center/:latlang/unit/:unit')
   .get(tourController.getTourWithin);
 
+routers.route('/distance/:latlang/unit/:unit').get(tourController.getDistance);
+
 module.exports = routers;
