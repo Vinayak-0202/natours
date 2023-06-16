@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const morgan = require('morgan');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -13,7 +14,15 @@ const hpp = require('hpp');
 
 const app = express();
 
+//setting template engine
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
 //1)Global MIDLEWAERS
+
+//serving static files
+//app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, 'public')));
 
 //Security http header
 app.use(helmet());
@@ -64,10 +73,11 @@ app.use((req, res, next) => {
   next();
 });
 
-//serving static files
-app.use(express.static(`${__dirname}/public`));
-
 //ROUTES
+app.get('/', (req, res) => {
+  res.status(200).render('base');
+});
+
 //Creating middleware tourRoutes and userRoutes
 app.use('/api/v1/tours', tourRoutes); //mount the routes
 app.use('/api/v1/users', userRoutes);
