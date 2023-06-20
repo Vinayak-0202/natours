@@ -6,6 +6,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const tourRoutes = require(`${__dirname}/routes/tourRoutes.js`);
 const userRoutes = require(`${__dirname}/routes/userRoutes.js`);
 const reivewRoutes = require(`${__dirname}/routes/reviewRoutes.js`);
+const viewRoutes = require(`${__dirname}/routes/viewRoutes.js`);
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -74,22 +75,12 @@ app.use((req, res, next) => {
 });
 
 //ROUTES
-app.get('/', (req, res) => {
-  res.status(200).render('base');
-});
+// app.get('/', (req, res) => {
+//   res.status(200).render('base');
+// });
 
-app.get('/overview', (req, res) => {
-  res.status(200).render('overview', {
-    title: 'All Tours',
-  });
-});
-
-app.get('/tour', (req, res) => {
-  res.status(200).render('tour', {
-    title: 'The Forest Hiker',
-  });
-});
 //Creating middleware tourRoutes and userRoutes
+app.use('/', viewRoutes);
 app.use('/api/v1/tours', tourRoutes); //mount the routes
 app.use('/api/v1/users', userRoutes);
 app.use('/api/v1/reviews', reivewRoutes);
