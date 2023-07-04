@@ -15,6 +15,16 @@ const hpp = require('hpp');
 
 const app = express();
 
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", 'https://unpkg.com'],
+      imgSrc: ["'self'", 'data:', 'https://tile.openstreetmap.org'],
+      // ... other directives if needed
+    },
+  })
+);
 //setting template engine
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
@@ -26,7 +36,7 @@ app.set('views', path.join(__dirname, 'views'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Security http header
-app.use(helmet());
+//app.use(helmet());
 
 console.log(process.env.NODE_ENV);
 if (!process.env.NODE_ENV === 'development') app.use(morgan('dev'));
@@ -48,7 +58,7 @@ app.use(express.json({ limit: '10kb' }));
 app.use(mongoSanitize());
 
 //Data santization against XSS
-app.use(xssClean());
+//app.use(xssClean());
 
 //prevent param solution
 app.use(
@@ -63,6 +73,9 @@ app.use(
   })
 );
 
+app.use(
+  helmet({ contentSecurityPolicy: false, crossOriginEmbedderPolicy: false })
+);
 app.use((req, res, next) => {
   console.log('This is the middlware function ');
   // console.log(req.headers);
