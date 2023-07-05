@@ -19,7 +19,11 @@ app.use(
   helmet.contentSecurityPolicy({
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", 'https://unpkg.com'],
+      scriptSrc: [
+        "'self'",
+        'https://unpkg.com',
+        'https://cdnjs.cloudflare.com',
+      ],
       imgSrc: ["'self'", 'data:', 'https://tile.openstreetmap.org'],
       // ... other directives if needed
     },
